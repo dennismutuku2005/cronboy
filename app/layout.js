@@ -1,5 +1,5 @@
 import "./globals.css";
-import { CronBoyProvider } from "@/context/CronBoyContext";
+import { CronBoyProvider } from "@/context";
 import AppShell from "@/components/common/AppShell";
 
 export const metadata = {

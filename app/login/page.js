@@ -10,7 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -21,17 +21,20 @@ export default function Login() {
 
     setLoading(true);
 
-    setTimeout(() => {
-      const result = loginUser(username, password);
+    try {
+      const result = await loginUser(username, password);
       if (result.success) {
         if (typeof window !== "undefined") {
           window.location.href = "/dashboard";
         }
       } else {
-        setError(result.message || "Invalid credentials. Use admin / admin123.");
+        setError(result.message || "Invalid credentials.");
         setLoading(false);
       }
-    }, 600);
+    } catch (err) {
+      setError("Login failed. Is the database running?");
+      setLoading(false);
+    }
   };
 
   const handleLogoError = (e) => {

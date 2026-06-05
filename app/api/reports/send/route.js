@@ -1,6 +1,4 @@
 import { sendDomainReport } from '@/lib/whatsapp';
-import { query } from '@/lib/db';
-
 export async function POST(req) {
   try {
     const { domains, reportType = 'summary', recipientPhone } = await req.json();
@@ -24,11 +22,7 @@ export async function POST(req) {
 
     if (result.success) {
       return Response.json(
-        {
-          success: true,
-          reportId: result.reportId,
-          message: result.message,
-        },
+        { success: true, reportId: result.reportId, message: result.message },
         { status: 200 }
       );
     } else {
@@ -45,3 +39,4 @@ export async function POST(req) {
     );
   }
 }
+

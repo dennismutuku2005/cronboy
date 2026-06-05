@@ -60,6 +60,19 @@ export default function SettingsPage() {
           <div className="settings-card card-panel">
             <h3 className="settings-title">Integration Credentials</h3>
             <div className="form-group">
+              <label className="form-label">WhatsApp Recipient Phone Number</label>
+              <input
+                type="tel"
+                className="form-input mono"
+                value={settingsData.whatsappPhone || ''}
+                onChange={(e) => updateSettingsState({ ...settingsData, whatsappPhone: e.target.value })}
+                placeholder="+254712345678"
+              />
+              <span style={{ fontSize: "11px", color: "var(--muted-text)", marginTop: "4px", display: "block" }}>
+                Include country code (e.g., +254 for Kenya)
+              </span>
+            </div>
+            <div className="form-group">
               <label className="form-label">Slack Integration Inbound Webhook URL</label>
               <input
                 type="password"

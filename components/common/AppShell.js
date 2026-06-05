@@ -56,12 +56,6 @@ export default function AppShell({ children }) {
     addRuleModal,
     setAddRuleModal,
     addRuleAction,
-    addChannelModal,
-    setAddChannelModal,
-    addChannelAction,
-    linkChannelModal,
-    setLinkChannelModal,
-    linkChannelSubmit,
     handleOpenAddPanel,
     themeMsg,
     handleThemeClick,
@@ -265,13 +259,9 @@ export default function AppShell({ children }) {
         addRuleModal={addRuleModal}
         setAddRuleModal={setAddRuleModal}
         addRuleAction={addRuleAction}
-        addChannelModal={addChannelModal}
-        setAddChannelModal={setAddChannelModal}
-        addChannelAction={addChannelAction}
-        linkChannelModal={linkChannelModal}
-        setLinkChannelModal={setLinkChannelModal}
-        linkChannelSubmit={linkChannelSubmit}
-        channels={ctx.channels}
+        sendReportModal={ctx.sendReportModal}
+        setSendReportModal={ctx.setSendReportModal}
+        handleSendWhatsAppReport={ctx.handleSendWhatsAppReport}
       />
 
       {/* 6. SUBDOMAIN DETAIL INFO MODAL */}

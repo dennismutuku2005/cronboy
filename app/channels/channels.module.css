@@ -1,0 +1,107 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.channelsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.channelCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--card-background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.channelCard:hover {
+  background: var(--hover-background);
+  border-color: var(--primary-accent);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-accent-bg);
+  border-radius: 6px;
+  color: var(--primary-accent);
+  flex-shrink: 0;
+}
+
+.channelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.channelInfo h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary-text);
+  margin: 0;
+}
+
+.channelInfo span {
+  font-size: 12px;
+  color: var(--secondary-text);
+  margin: 0;
+}
+
+.statusBadge {
+  display: inline-flex;
+  padding: 4px 10px;
+  background: var(--success-green-bg);
+  color: var(--success-green-text);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: var(--card-background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoSection strong {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary-text);
+  margin: 0;
+}
+
+.infoSection p {
+  font-size: 13px;
+  color: var(--secondary-text);
+  margin: 0;
+  line-height: 1.6;
+}
