@@ -491,6 +491,57 @@ export function CronBoyProvider({ children }) {
     triggerToast(allPaused ? "Monitors Resumed" : "Monitors Paused", "Selected monitors state toggled.", "success");
   };
 
+  // --- WHATSAPP REPORTING ---
+  const buildReportText = (ids) => {
+    const selected = subdomains.filter(s => ids.includes(s.id));
+    const lines = [];
+    const now = new Date();
+    lines.push(`CronBoy Report - ${now.toISOString().replace('T', ' ').substring(0, 19)}`);
+    lines.push(`Selected domains: ${selected.length}`);
+    lines.push("");
+    selected.forEach((s) => {
+      lines.push(`${s.subdomain}`);
+      lines.push(` Status: ${s.status}`);
+      lines.push(` Last checked: ${s.lastChecked}`);
+      lines.push(` Response time: ${s.responseTime && s.responseTime > 0 ? `${s.responseTime}ms` : '—'}`);
+      lines.push(` Uptime: ${s.uptime}%`);
+      lines.push(` SSL expiry days: ${s.sslExpiryDays}`);
+      lines.push("");
+    });
+    lines.push("-- End of report --");
+    return lines.join("\n");
+  };
+
+  const sendWhatsAppReport = async (phone, ids) => {
+    if (!phone) {
+      triggerToast("Missing phone", "Phone number is required.", "error");
+      return;
+    }
+    const text = buildReportText(ids);
+    try {
+      const res = await fetch('/api/whatsapp/primary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, text })
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) {
+        triggerToast('Report sent', `WhatsApp report queued to ${phone}`, 'success');
+      } else {
+        triggerToast('Failed to send', json?.error || `Status ${res.status}`, 'error');
+      }
+    } catch (err) {
+      triggerToast('Failed to send', err.message || 'Network error', 'error');
+    }
+  };
+
+  const sendWhatsAppReportPrompt = (ids) => {
+    if (typeof window === 'undefined') return;
+    const phone = window.prompt('Enter recipient phone number (include country code, e.g. 2547...)');
+    if (!phone) return;
+    sendWhatsAppReport(phone.trim(), ids);
+  };
+
   const handleToggleRule = (ruleId) => {
     const updated = rules.map(r => r.id !== ruleId ? r : { ...r, enabled: !r.enabled });
     updateRulesState(updated);
@@ -546,6 +597,7 @@ export function CronBoyProvider({ children }) {
     handleSSLRefresh, handleSSLRenew, handleThemeClick, handleSignOut, handleLogoError,
     users, currentUser, loginUser, createUser, deleteUser, updateUser, isSuperAdmin,
     translateCron,
+    sendWhatsAppReport, sendWhatsAppReportPrompt,
   };
 
   return <CronBoyContext.Provider value={value}>{children}</CronBoyContext.Provider>;

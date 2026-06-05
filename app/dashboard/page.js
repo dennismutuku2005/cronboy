@@ -22,7 +22,8 @@ export default function DashboardPage() {
     handleTriggerCheck,
     handleOpenEditPanel,
     setDeleteConfirm,
-    setDetailModal
+    setDetailModal,
+    sendWhatsAppReportPrompt
   } = ctx;
 
   const {
@@ -153,6 +154,9 @@ export default function DashboardPage() {
             </button>
             <button className="btn-destructive" onClick={handleBatchDelete} style={{ padding: "4px 8px", fontSize: "11px" }}>
               Batch Delete
+            </button>
+            <button className="btn-primary" onClick={() => sendWhatsAppReportPrompt(selectedRows)} style={{ padding: "6px 10px", fontSize: "12px" }}>
+              Send report (WhatsApp)
             </button>
           </div>
         </div>
