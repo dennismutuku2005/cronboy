@@ -34,7 +34,6 @@ This creates all necessary tables with UUID primary keys:
 - `users` - User accounts and access control
 - `subdomains` - Domain monitors
 - `cron_jobs` - Scheduled jobs
-- `channels` - Alert channels (email, WhatsApp, etc.)
 - `alert_rules` - Alert configurations
 - `logs` - Health check logs
 - `reports` - Generated reports

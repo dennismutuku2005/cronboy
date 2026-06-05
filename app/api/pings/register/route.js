@@ -15,8 +15,7 @@ export async function POST(req) {
     const { name, url, interval_mins } = body || {};
     if (!url || !name) return NextResponse.json({ error: 'name and url required' }, { status: 400 });
     const normalized = normalizeUrl(url);
-
-    const id = `ping-${Date.now()}`;
+    const id = (globalThis.crypto && globalThis.crypto.randomUUID) ? globalThis.crypto.randomUUID() : `ping-${Date.now()}`;
     await query('INSERT INTO pings (id, name, url, interval_mins) VALUES (?, ?, ?, ?)', [id, name, normalized, parseInt(interval_mins || 5, 10)]);
     return NextResponse.json({ ok: true, id });
   } catch (err) {

@@ -48,17 +48,6 @@ CREATE TABLE cron_jobs (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Channels table
-CREATE TABLE channels (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name VARCHAR(255) NOT NULL,
-  type VARCHAR(50) NOT NULL CHECK (type IN ('email', 'whatsapp', 'slack', 'webhook')),
-  config JSONB NOT NULL,
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Alert Rules table
 CREATE TABLE alert_rules (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -66,7 +55,6 @@ CREATE TABLE alert_rules (
   condition VARCHAR(255) NOT NULL,
   threshold INTEGER,
   enabled BOOLEAN DEFAULT true,
-  channels UUID[] DEFAULT '{}',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

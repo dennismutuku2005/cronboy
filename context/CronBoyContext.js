@@ -31,16 +31,10 @@ const INITIAL_SUBDOMAINS = [
 ];
 
 const INITIAL_RULES = [
-  { id: "rule-1", name: "Uptime Degraded Alert", condition: "Uptime drops below 99.0%", channels: ["Email", "Webhook"], enabled: true },
-  { id: "rule-2", name: "SSL Certificate Expiry Warning", condition: "SSL Expiry is less than 7 days", channels: ["Email", "SMS"], enabled: true },
-  { id: "rule-3", name: "Down Service Notification", condition: "Subdomain health status changes to DOWN", channels: ["Email", "Webhook", "SMS"], enabled: true },
-  { id: "rule-4", name: "Latency Spike Monitor", condition: "Response time exceeds 400ms for 3 checks", channels: ["Webhook"], enabled: false }
-];
-
-const INITIAL_CHANNELS = [
-  { id: "chan-1", name: "Email Alert Routing", type: "Email", config: "alerts@cronboy.io, devops-team@cronboy.io", active: true },
-  { id: "chan-2", name: "Slack Systems Webhook", type: "Webhook", config: "https://hooks.slack.com/services/T00/B00/X00", active: true },
-  { id: "chan-3", name: "Twilio On-Call SMS", type: "SMS", config: "+1 (555) 902-1234, +1 (555) 338-9871", active: false }
+  { id: "rule-1", name: "Uptime Degraded Alert", condition: "Uptime drops below 99.0%", enabled: true },
+  { id: "rule-2", name: "SSL Certificate Expiry Warning", condition: "SSL Expiry is less than 7 days", enabled: true },
+  { id: "rule-3", name: "Down Service Notification", condition: "Subdomain health status changes to DOWN", enabled: true },
+  { id: "rule-4", name: "Latency Spike Monitor", condition: "Response time exceeds 400ms for 3 checks", enabled: false }
 ];
 
 const INITIAL_INCIDENTS = [
@@ -104,7 +98,6 @@ export function CronBoyProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const [subdomains, setSubdomains] = useState(INITIAL_SUBDOMAINS);
   const [rules, setRules] = useState(INITIAL_RULES);
-  const [channels, setChannels] = useState(INITIAL_CHANNELS);
   const [incidents, setIncidents] = useState(INITIAL_INCIDENTS);
   const [activeEnv, setActiveEnv] = useState("Production");
   const [activeTab, setActiveTab] = useState("All");
@@ -117,9 +110,7 @@ export function CronBoyProvider({ children }) {
   const [settingsData, setSettingsData] = useState({ siteName: "Cron Boy Operations", alertEmail: "alerts@cronboy.io", slackWebhook: "https://hooks.slack.com/services/T00/B00/X00", twilioSid: "AC1928374829384729384", autoRefresh: true });
   const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null, subdomain: "", isBatch: false });
   const [unlinkConfirm, setUnlinkConfirm] = useState({ isOpen: false, id: null, subdomain: "", cron: "" });
-  const [addRuleModal, setAddRuleModal] = useState({ isOpen: false, name: "", condition: "", channels: [] });
-  const [addChannelModal, setAddChannelModal] = useState({ isOpen: false, name: "", type: "Email", config: "" });
-  const [linkChannelModal, setLinkChannelModal] = useState({ isOpen: false, ruleId: null, ruleName: "", selectedChan: "" });
+  const [addRuleModal, setAddRuleModal] = useState({ isOpen: false, name: "", condition: "" });
   const [detailModal, setDetailModal] = useState({ isOpen: false, sub: null });
   const [users, setUsers] = useState(INITIAL_USERS);
   const [currentUser, setCurrentUser] = useState(null);
@@ -185,12 +176,10 @@ export function CronBoyProvider({ children }) {
     if (typeof window !== "undefined") {
       const s = localStorage.getItem("cb_subdomains");
       const r = localStorage.getItem("cb_rules");
-      const c = localStorage.getItem("cb_channels");
       const i = localStorage.getItem("cb_incidents");
       const st = localStorage.getItem("cb_settings");
       if (s) setSubdomains(JSON.parse(s));
       if (r) setRules(JSON.parse(r));
-      if (c) setChannels(JSON.parse(c));
       if (i) setIncidents(JSON.parse(i));
       if (st) setSettingsData(JSON.parse(st));
     }
@@ -202,7 +191,6 @@ export function CronBoyProvider({ children }) {
 
   const updateSubdomainsState = (v) => { setSubdomains(v); saveToStorage("cb_subdomains", v); };
   const updateRulesState = (v) => { setRules(v); saveToStorage("cb_rules", v); };
-  const updateChannelsState = (v) => { setChannels(v); saveToStorage("cb_channels", v); };
   const updateIncidentsState = (v) => { setIncidents(v); saveToStorage("cb_incidents", v); };
   const updateSettingsState = (v) => { setSettingsData(v); saveToStorage("cb_settings", v); };
   const updateUsersState = (v) => { setUsers(v); saveToStorage("cb_users", v); };
@@ -411,27 +399,10 @@ export function CronBoyProvider({ children }) {
 
   const addRuleAction = (e) => {
     e.preventDefault();
-    const newRule = { id: `rule-${Date.now()}`, name: addRuleModal.name, condition: addRuleModal.condition, channels: addRuleModal.channels.length > 0 ? addRuleModal.channels : ["Email"], enabled: true };
+    const newRule = { id: `rule-${Date.now()}`, name: addRuleModal.name, condition: addRuleModal.condition, enabled: true };
     updateRulesState([...rules, newRule]);
     triggerToast("Rule Added", `"${addRuleModal.name}" is now active.`, "success");
-    setAddRuleModal({ isOpen: false, name: "", condition: "", channels: [] });
-  };
-
-  const addChannelAction = (e) => {
-    e.preventDefault();
-    const newChan = { id: `chan-${Date.now()}`, name: addChannelModal.name, type: addChannelModal.type, config: addChannelModal.config, active: true };
-    updateChannelsState([...channels, newChan]);
-    triggerToast("Channel Added", `"${addChannelModal.name}" saved.`, "success");
-    setAddChannelModal({ isOpen: false, name: "", type: "Email", config: "" });
-  };
-
-  const linkChannelSubmit = (e) => {
-    e.preventDefault();
-    if (!linkChannelModal.selectedChan) return;
-    const updated = rules.map(r => r.id !== linkChannelModal.ruleId ? r : { ...r, channels: [...new Set([...r.channels, linkChannelModal.selectedChan])] });
-    updateRulesState(updated);
-    triggerToast("Channel Linked", `Linked to ${linkChannelModal.ruleName}.`, "success");
-    setLinkChannelModal({ isOpen: false, ruleId: null, ruleName: "", selectedChan: "" });
+    setAddRuleModal({ isOpen: false, name: "", condition: "" });
   };
 
   const handleOpenAddPanel = () => {
@@ -553,13 +524,6 @@ export function CronBoyProvider({ children }) {
     triggerToast(!rule?.enabled ? "Rule Enabled" : "Rule Disabled", `"${rule?.name}" toggled.`, "info");
   };
 
-  const handleToggleChannel = (chanId) => {
-    const updated = channels.map(c => c.id !== chanId ? c : { ...c, active: !c.active });
-    updateChannelsState(updated);
-    const chan = channels.find(c => c.id === chanId);
-    triggerToast(!chan?.active ? "Channel Active" : "Channel Paused", `"${chan?.name}" state updated.`, "info");
-  };
-
   const handleSSLRefresh = (id) => {
     const updated = subdomains.map(s => s.id !== id ? s : { ...s, lastChecked: "Just now", sslExpiryDays: s.sslExpiryDays <= 0 ? -1 : Math.min(90, s.sslExpiryDays + 15) });
     updateSubdomainsState(updated);
@@ -585,19 +549,17 @@ export function CronBoyProvider({ children }) {
 
   const value = {
     isAuthenticated, isLoading, toasts, triggerToast,
-    subdomains, rules, channels, incidents,
+    subdomains, rules, incidents,
     activeEnv, setActiveEnv, activeTab, setActiveTab,
     searchQuery, setSearchQuery, selectedRows, setSelectedRows,
     themeMsg, isPanelOpen, setIsPanelOpen, panelMode, panelData, setPanelData,
     settingsData, updateSettingsState,
     deleteConfirm, setDeleteConfirm, unlinkConfirm, setUnlinkConfirm,
-    addRuleModal, setAddRuleModal, addChannelModal, setAddChannelModal,
-    linkChannelModal, setLinkChannelModal, detailModal, setDetailModal,
+    addRuleModal, setAddRuleModal, detailModal, setDetailModal,
     envFiltered, tabFiltered, finalFilteredSubdomains, stats, donutPercentages, cronActivityStats,
     handleSelectRow, handleSelectAll, handleTriggerCheck, handleTogglePause,
-    confirmDeleteAction, confirmUnlinkAction, addRuleAction, addChannelAction,
-    linkChannelSubmit, handleOpenAddPanel, handleOpenEditPanel, handlePanelSubmit,
-    handleBatchDelete, handleBatchPause, handleToggleRule, handleToggleChannel,
+    confirmDeleteAction, confirmUnlinkAction, addRuleAction, handleOpenAddPanel, handleOpenEditPanel, handlePanelSubmit,
+    handleBatchDelete, handleBatchPause, handleToggleRule,
     handleSSLRefresh, handleSSLRenew, handleThemeClick, handleSignOut, handleLogoError,
     users, currentUser, loginUser, createUser, deleteUser, updateUser, isSuperAdmin,
     translateCron,
