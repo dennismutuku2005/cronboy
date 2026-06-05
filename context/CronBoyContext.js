@@ -517,16 +517,20 @@ export function CronBoyProvider({ children }) {
       triggerToast("Missing phone", "Phone number is required.", "error");
       return;
     }
-    const text = buildReportText(ids);
+    const selected = subdomains.filter(s => ids.includes(s.id));
     try {
-      const res = await fetch('/api/whatsapp/primary', {
+      const res = await fetch('/api/reports/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, text })
+        body: JSON.stringify({ 
+          domains: selected, 
+          reportType: 'detailed',
+          recipientPhone: phone 
+        })
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok) {
-        triggerToast('Report sent', `WhatsApp report queued to ${phone}`, 'success');
+        triggerToast('Report sent', `WhatsApp report sent to ${phone}`, 'success');
       } else {
         triggerToast('Failed to send', json?.error || `Status ${res.status}`, 'error');
       }
