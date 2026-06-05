@@ -1,4 +1,6 @@
-﻿![CronBoy logo](public/logo.png)
+﻿<p align="center">
+  <img src="public/logo.png" alt="CronBoy logo" width="320" />
+</p>
 
 # CronBoy
 
