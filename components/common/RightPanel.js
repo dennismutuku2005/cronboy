@@ -1,5 +1,20 @@
 import React from "react";
 
+function formatTimeAgo(timestamp) {
+  if (!timestamp) return 'Unknown';
+  const then = new Date(timestamp);
+  const diffMs = Date.now() - then.getTime();
+  if (diffMs < 0) return 'Just now';
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 60) return `${diffSec}s ago`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  return `${diffDay}d ago`;
+}
+
 export default function RightPanel({
   activeView,
   envFiltered,
@@ -10,9 +25,12 @@ export default function RightPanel({
   renderDonutChart,
   mobileOpen
 }) {
-  if (activeView !== "Dashboard" && activeView !== "Subdomains" && activeView !== "SSL Certificates") {
+  if (activeView !== "Dashboard" && activeView !== "Subdomains") {
     return null;
   }
+
+  const latestIncident = incidents?.[0] || null;
+  const lastFailure = incidents?.find((item) => item.status?.toLowerCase() === 'down');
 
   return (
     <aside className={`right-panel ${mobileOpen ? "mobile-open" : ""}`}>
@@ -58,8 +76,8 @@ export default function RightPanel({
           </div>
           <div className="right-stat-row" style={{ borderTop: "1px solid var(--border)", paddingTop: "8px", marginTop: "4px" }}>
             <span className="right-stat-label">Last Incident</span>
-            <span className="right-stat-val" style={{ color: incidents.length > 0 ? "var(--error-red-text)" : "var(--success-green-text)", fontSize: "11px" }}>
-              {incidents.length > 0 ? incidents[0].subdomain : "None active"}
+            <span className="right-stat-val" style={{ color: latestIncident ? "var(--error-red-text)" : "var(--success-green-text)", fontSize: "11px" }}>
+              {latestIncident ? `${latestIncident.subdomain || 'Unknown'} (${latestIncident.status})` : "None active"}
             </span>
           </div>
         </div>
@@ -135,8 +153,8 @@ export default function RightPanel({
           </div>
           <div className="right-stat-row" style={{ borderTop: "1px solid var(--border)", paddingTop: "8px", marginTop: "4px" }}>
             <span className="right-stat-label">Last failure</span>
-            <span className="right-stat-val" style={{ fontSize: "11px", color: incidents.length > 0 ? "var(--error-red-text)" : "var(--muted-text)" }}>
-              {incidents.filter(i => i.type === "DOWN").length > 0 ? "10m ago" : "No recent failure"}
+            <span className="right-stat-val" style={{ fontSize: "11px", color: lastFailure ? "var(--error-red-text)" : "var(--muted-text)" }}>
+              {lastFailure ? formatTimeAgo(lastFailure.timestamp) : "No recent failure"}
             </span>
           </div>
         </div>

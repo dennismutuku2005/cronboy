@@ -24,6 +24,13 @@ function DataLoader({ children }) {
     loadIncidents();
     loadRules();
     loadUsers();
+
+    const intervalId = setInterval(() => {
+      loadSubdomains();
+      loadIncidents();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, [isAuthenticated, loadSubdomains, loadIncidents, loadRules, loadUsers]);
   return <>{children}</>;
 }

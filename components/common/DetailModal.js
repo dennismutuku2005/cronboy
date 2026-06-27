@@ -65,26 +65,6 @@ export default function DetailModal({
             </div>
           </div>
 
-          {/* SSL Credentials Box */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px", background: "var(--hover-background)", padding: "12px", borderRadius: "8px" }}>
-            <h4 style={{ fontSize: "11px", fontWeight: "500", color: "var(--primary-text)" }}>SSL Certification Monitor Target</h4>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "12px" }}>
-              <div>
-                <span style={{ color: "var(--secondary-text)" }}>Issuer:</span> <span className="mono-text" style={{ fontSize: "11px" }}>{sub.sslIssuer}</span>
-              </div>
-              <div>
-                <span style={{ color: "var(--secondary-text)" }}>Status:</span> &nbsp;
-                {sub.sslExpiryDays <= 0 ? (
-                  <span className="badge badge-down">EXPIRED</span>
-                ) : sub.sslExpiryDays <= 7 ? (
-                  <span className="badge badge-degraded">CRITICAL ({sub.sslExpiryDays}d)</span>
-                ) : (
-                  <span className="badge badge-healthy">SECURE ({sub.sslExpiryDays}d left)</span>
-                )}
-              </div>
-            </div>
-          </div>
-
           {/* Linked Cron Jobs details */}
           {sub.linkedCron && (
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", border: "1px solid var(--border)", padding: "12px", borderRadius: "8px" }}>

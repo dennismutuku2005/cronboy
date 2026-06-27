@@ -49,7 +49,6 @@ export function SubdomainProvider({ children }) {
       case "Healthy": return envFiltered.filter(s => s.status === "healthy");
       case "Degraded": return envFiltered.filter(s => s.status === "degraded");
       case "Down": return envFiltered.filter(s => s.status === "down");
-      case "Expiring SSL": return envFiltered.filter(s => s.sslExpiryDays <= 7 && s.status !== "paused");
       case "Paused": return envFiltered.filter(s => s.status === "paused");
       default: return envFiltered;
     }
@@ -180,10 +179,10 @@ export function SubdomainProvider({ children }) {
       finalInterval = `${val}${panelData.customIntervalUnit}`;
     }
     if (panelMode === "add") {
-      const res = await api.createSubdomain({ subdomain: panelData.subdomain, env: panelData.env, checkInterval: finalInterval, sslAutoRenew: panelData.sslAutoRenew, linkedCron: panelData.linkedCron || null, cronSchedule: panelData.linkedCron ? panelData.cronSchedule : null });
+      const res = await api.createSubdomain({ subdomain: panelData.subdomain, env: panelData.env, checkInterval: finalInterval, sslAutoRenew: panelData.sslAutoRenew });
       if (res?.ok) { await refreshSubdomains(); triggerToast("Added", `${panelData.subdomain} added.`, "success"); }
     } else {
-      const res = await api.updateSubdomain(panelData.id, { subdomain: panelData.subdomain, env: panelData.env, check_interval: finalInterval, ssl_auto_renew: panelData.sslAutoRenew, linked_cron: panelData.linkedCron || null, cron_schedule: panelData.linkedCron ? panelData.cronSchedule : null });
+      const res = await api.updateSubdomain(panelData.id, { subdomain: panelData.subdomain, env: panelData.env, check_interval: finalInterval, ssl_auto_renew: panelData.sslAutoRenew });
       if (res?.ok) { await refreshSubdomains(); triggerToast("Updated", `Config saved.`, "success"); }
     }
     setIsPanelOpen(false);

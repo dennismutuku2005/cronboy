@@ -171,7 +171,6 @@ export default function AppShell({ children }) {
     switch (path) {
       case "/dashboard": return "Dashboard";
       case "/domains": return "Domains";
-      case "/ssl": return "SSL Certificates";
       case "/dns": return "DNS Health";
       case "/jobs": return "Job Overview";
       case "/logs": return "Execution Logs";

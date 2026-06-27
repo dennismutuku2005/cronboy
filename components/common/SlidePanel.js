@@ -101,56 +101,6 @@ export default function SlidePanel({
               </div>
             )}
 
-            <div className="form-group" style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border)", paddingTop: "10px", marginTop: "4px" }}>
-              <div>
-                <label className="form-label" style={{ color: "var(--primary-text)", margin: 0 }}>SSL Expiry Monitor</label>
-                <span style={{ fontSize: "10px", color: "var(--muted-text)", display: "block" }}>
-                  Automatic check validity alert
-                </span>
-              </div>
-              <label className="toggle-container">
-                <input
-                  type="checkbox"
-                  className="toggle-input"
-                  checked={panelData.sslAutoRenew}
-                  onChange={(e) => setPanelData({ ...panelData, sslAutoRenew: e.target.checked })}
-                />
-                <span className="toggle-switch"></span>
-              </label>
-            </div>
-
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "10px", marginTop: "4px" }}>
-              <h4 style={{ fontSize: "11px", fontWeight: "500", color: "var(--secondary-text)", marginBottom: "8px" }}>
-                Cron Job Link (Optional)
-              </h4>
-              
-              <div className="form-group">
-                <label className="form-label">Cron Job Identifier Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Database Backup Script"
-                  className="form-input"
-                  value={panelData.linkedCron}
-                  onChange={(e) => setPanelData({ ...panelData, linkedCron: e.target.value })}
-                />
-              </div>
-
-              {panelData.linkedCron && (
-                <div className="form-group">
-                  <label className="form-label">Cron Expression Schedule</label>
-                  <input
-                    type="text"
-                    className="form-input mono"
-                    value={panelData.cronSchedule}
-                    onChange={(e) => setPanelData({ ...panelData, cronSchedule: e.target.value })}
-                  />
-                  <span className="form-sub-preview">
-                    Preview: {translateCron(panelData.cronSchedule)}
-                  </span>
-                </div>
-              )}
-            </div>
-
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>

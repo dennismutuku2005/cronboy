@@ -26,8 +26,7 @@ export default function Header({
           <h1 className="page-title" style={{ fontSize: "18px", margin: "0" }}>
             {activeView === "Dashboard" ? "Dashboard" :
              activeView === "Domains" ? "Domains" :
-             activeView === "SSL Certificates" ? "SSL Certificates" :
-             activeView === "DNS Health" ? "DNS Health" :
+                activeView === "DNS Health" ? "DNS Health" :
              activeView === "Job Overview" || activeView === "Schedules" ? "Job Overview" :
              activeView === "Execution Logs" ? "Execution Logs" :
              activeView === "Alert Rules" ? "Alert Rules" :
@@ -52,7 +51,7 @@ export default function Header({
         )}
 
         {/* Right Panel Toggle Icon (Activity / Info) */}
-        {(activeView === "Dashboard" || activeView === "Domains" || activeView === "SSL Certificates") && (
+        {(activeView === "Dashboard" || activeView === "Domains") && (
           <button 
             className="mobile-toggle-btn right-toggle"
             onClick={toggleMobileRightPanel}

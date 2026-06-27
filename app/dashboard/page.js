@@ -121,13 +121,12 @@ export default function DashboardPage() {
 
       {/* Filter Tab strip */}
       <div className="tab-strip">
-        {["All", "Healthy", "Degraded", "Down", "Expiring SSL", "Paused"].map((tab) => {
+        {['All', 'Healthy', 'Degraded', 'Down', 'Paused'].map((tab) => {
           const count = 
             tab === "All" ? envFiltered.length :
             tab === "Healthy" ? envFiltered.filter(s => s.status === "healthy").length :
             tab === "Degraded" ? envFiltered.filter(s => s.status === "degraded").length :
             tab === "Down" ? envFiltered.filter(s => s.status === "down").length :
-            tab === "Expiring SSL" ? envFiltered.filter(s => s.sslExpiryDays <= 7 && s.status !== "paused").length :
             envFiltered.filter(s => s.status === "paused").length;
 
           return (
@@ -180,7 +179,6 @@ export default function DashboardPage() {
                 <th style={{ width: "130px" }}>Last Checked</th>
                 <th style={{ width: "110px" }}>Latency</th>
                 <th style={{ width: "90px" }}>Uptime</th>
-                <th style={{ width: "150px" }}>SSL Expiry</th>
                 <th style={{ width: "120px", textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
@@ -228,19 +226,6 @@ export default function DashboardPage() {
                         <td className="mono-text" style={{ fontSize: "12px", color: "var(--secondary-text)" }}>
                           {sub.uptime}%
                         </td>
-                        <td>
-                          {sub.status === "paused" ? (
-                            <span className="badge badge-paused">PAUSED</span>
-                          ) : sub.sslExpiryDays <= 0 ? (
-                            <span className="badge badge-down">EXPIRED ({Math.abs(sub.sslExpiryDays)}d ago)</span>
-                          ) : sub.sslExpiryDays <= 7 ? (
-                            <span className="badge badge-degraded">CRITICAL ({sub.sslExpiryDays}d)</span>
-                          ) : sub.sslExpiryDays <= 30 ? (
-                            <span className="badge badge-expiring">EXPIRING ({sub.sslExpiryDays}d)</span>
-                          ) : (
-                            <span className="badge badge-healthy">SECURE ({sub.sslExpiryDays}d)</span>
-                          )}
-                        </td>
                         <td style={{ textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
                           <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end" }}>
                             <button className="btn-secondary" style={{ padding: "4px 6px" }} onClick={(e) => handleTriggerCheck(sub.id, e)} title="Test healthcheck now">
@@ -267,14 +252,14 @@ export default function DashboardPage() {
               )}
               {isLoadingMore && (
                 <>
-                  <SkeletonRow colSpan={8} />
-                  <SkeletonRow colSpan={8} />
+                  <SkeletonRow colSpan={7} />
+                  <SkeletonRow colSpan={7} />
                 </>
               )}
               <InfiniteScrollTrigger
                 hasMore={hasMore}
                 loadMore={loadMore}
-                colSpan={8}
+                colSpan={7}
               />
             </tbody>
           </table>
