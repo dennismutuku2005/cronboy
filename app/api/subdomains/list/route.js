@@ -33,7 +33,22 @@ export async function GET(req) {
 
     const pool = getPool();
     const [rows] = await pool.execute(sql, params);
-    return NextResponse.json({ ok: true, data: rows });
+
+    let subdomainsWithLogs = rows;
+    if (rows.length > 0) {
+      const subdomainIds = rows.map(r => r.id);
+      const placeholders = subdomainIds.map(() => '?').join(',');
+      const [logs] = await pool.execute(
+        `SELECT * FROM logs WHERE subdomain_id IN (${placeholders}) ORDER BY timestamp DESC LIMIT 100`,
+        subdomainIds
+      );
+      subdomainsWithLogs = rows.map(sub => ({
+        ...sub,
+        logs: logs.filter(log => log.subdomain_id === sub.id)
+      }));
+    }
+
+    return NextResponse.json({ ok: true, data: subdomainsWithLogs });
   } catch (err) {
     console.error('[API] subdomains/list error:', err);
     return NextResponse.json({ ok: false, error: err.message }, { status: 500 });

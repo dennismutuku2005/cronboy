@@ -117,8 +117,13 @@ export default function UsersPage() {
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
+    if (deleteTarget.role === 'Superadmin') {
+      triggerToast("Protected account", "Superadmin accounts cannot be deleted.", "error");
+      setDeleteTarget(null);
+      return;
+    }
     if (currentUser?.id === deleteTarget.id) {
-      triggerToast("Cannot remove self", "You cannot delete your own superadmin account.", "error");
+      triggerToast("Cannot remove self", "You cannot delete your own account.", "error");
       setDeleteTarget(null);
       return;
     }
@@ -191,13 +196,18 @@ export default function UsersPage() {
                   <td><span className="user-role-badge">{user.role}</span></td>
                   <td>{user.policies.join(", ")}</td>
                   <td>
-                    <button
-                      className="btn-secondary"
-                      style={{ padding: "6px 10px", fontSize: "12px" }}
-                      onClick={() => setDeleteTarget(user)}
-                    >
-                      Delete
-                    </button>
+                    {user.role !== 'Superadmin' && (
+                      <button
+                        className="btn-secondary"
+                        style={{ padding: "6px 10px", fontSize: "12px" }}
+                        onClick={() => setDeleteTarget(user)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                    {user.role === 'Superadmin' && (
+                      <span style={{ fontSize: "11px", color: "var(--muted-text)", fontStyle: "italic" }}>Protected</span>
+                    )}
                   </td>
                 </tr>
               ))}

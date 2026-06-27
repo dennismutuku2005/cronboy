@@ -1,5 +1,13 @@
 "use client";
 
+function parseHistory(val) {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try { return JSON.parse(val); } catch { return [0,0,0,0,0,0,0]; }
+  }
+  return [0,0,0,0,0,0,0];
+}
+
 export function translateCron(expression) {
   if (!expression) return "No linked cron job";
   const trimmed = expression.trim().replace(/\s+/g, " ");
@@ -58,7 +66,12 @@ export function mapSubdomain(db) {
     cronSchedule: db.cron_schedule || '',
     checkInterval: db.check_interval || '5m',
     sslAutoRenew: db.ssl_auto_renew ?? true,
-    history: db.history || [0,0,0,0,0,0,0],
-    logs: [],
+    history: parseHistory(db.history),
+    logs: Array.isArray(db.logs) ? db.logs.map(log => ({
+      timestamp: log.timestamp ? new Date(log.timestamp).toISOString().replace('T', ' ').substring(0, 19) : 'Just now',
+      status: log.status,
+      duration: log.duration,
+      message: log.message
+    })) : [],
   };
 }

@@ -13,7 +13,15 @@ export function RuleProvider({ children }) {
 
   const loadRules = useCallback(async () => {
     const data = await api.fetchRules();
-    if (data && data.length > 0) setRules(data.map(r => ({ id: r.id, name: r.name, condition: r.condition, enabled: r.enabled ?? true })));
+    if (data) {
+      setRules(data.map(r => ({
+        id: r.id,
+        name: r.name,
+        condition: r.rule_condition || '',
+        enabled: r.enabled ?? true,
+        channels: r.channels || []
+      })));
+    }
   }, []);
 
   const addRuleAction = async (e) => {

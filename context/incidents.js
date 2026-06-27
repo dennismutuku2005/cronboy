@@ -10,7 +10,7 @@ export function IncidentProvider({ children }) {
 
   const loadIncidents = useCallback(async () => {
     const data = await api.fetchIncidents();
-    if (data && data.length > 0) setIncidents(data);
+    if (data) setIncidents(data);
   }, []);
 
   return (

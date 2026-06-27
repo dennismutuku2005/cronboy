@@ -10,7 +10,7 @@ export function UserProvider({ children }) {
 
   const loadUsers = useCallback(async () => {
     const data = await api.fetchUsers();
-    if (data && data.length > 0) setUsers(data);
+    if (data) setUsers(data);
   }, []);
 
   const createUser = (newUser) => setUsers(prev => [...prev, newUser]);

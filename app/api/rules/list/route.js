@@ -18,7 +18,7 @@ export async function POST(req) {
     const { name, condition, enabled } = body;
     const pool = getPool();
     const [result] = await pool.execute(
-      'INSERT INTO alert_rules (name, condition, enabled) VALUES (?, ?, ?)',
+      'INSERT INTO alert_rules (name, rule_condition, enabled) VALUES (?, ?, ?)',
       [name || 'Untitled Rule', condition || '', enabled ?? true]
     );
     return NextResponse.json({ ok: true, id: result.insertId });
@@ -36,7 +36,7 @@ export async function PATCH(req) {
     const vals = [];
     if (enabled !== undefined) { sets.push('enabled = ?'); vals.push(enabled); }
     if (name !== undefined) { sets.push('name = ?'); vals.push(name); }
-    if (condition !== undefined) { sets.push('condition = ?'); vals.push(condition); }
+    if (condition !== undefined) { sets.push('rule_condition = ?'); vals.push(condition); }
     if (sets.length === 0) return NextResponse.json({ ok: false, error: 'No fields' }, { status: 400 });
     vals.push(id);
     await pool.execute(`UPDATE alert_rules SET ${sets.join(', ')} WHERE id = ?`, vals);

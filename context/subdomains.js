@@ -32,7 +32,7 @@ export function SubdomainProvider({ children }) {
   // --- DATA ---
   const loadSubdomains = useCallback(async () => {
     const subs = await api.fetchSubdomains();
-    if (subs && subs.length > 0) setSubdomains(subs.map(mapSubdomain).filter(Boolean));
+    if (subs) setSubdomains(subs.map(mapSubdomain).filter(Boolean));
   }, []);
 
   const refreshSubdomains = useCallback(async () => {
@@ -60,6 +60,12 @@ export function SubdomainProvider({ children }) {
     const q = searchQuery.toLowerCase();
     return tabFiltered.filter(s => s.subdomain.toLowerCase().includes(q) || (s.linkedCron && s.linkedCron.toLowerCase().includes(q)));
   }, [tabFiltered, searchQuery]);
+
+  const finalFilteredDomains = useMemo(() => {
+    if (!searchQuery.trim()) return envFiltered;
+    const q = searchQuery.toLowerCase();
+    return envFiltered.filter(s => s.subdomain.toLowerCase().includes(q) || (s.linkedCron && s.linkedCron.toLowerCase().includes(q)));
+  }, [envFiltered, searchQuery]);
 
   const stats = useMemo(() => ({
     total: envFiltered.length,
@@ -101,8 +107,9 @@ export function SubdomainProvider({ children }) {
     setSelectedRows(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
   };
 
-  const handleSelectAll = () => {
-    const ids = finalFilteredSubdomains.map(s => s.id);
+  const handleSelectAll = (customList) => {
+    const list = Array.isArray(customList) ? customList : finalFilteredSubdomains;
+    const ids = list.map(s => s.id);
     const allSelected = ids.every(id => selectedRows.includes(id));
     setSelectedRows(allSelected ? selectedRows.filter(id => !ids.includes(id)) : Array.from(new Set([...selectedRows, ...ids])));
   };
@@ -217,7 +224,7 @@ export function SubdomainProvider({ children }) {
       isPanelOpen, setIsPanelOpen, panelMode, setPanelMode, panelData, setPanelData,
       deleteConfirm, setDeleteConfirm, unlinkConfirm, setUnlinkConfirm,
       detailModal, setDetailModal, sendReportModal, setSendReportModal,
-      envFiltered, tabFiltered, finalFilteredSubdomains, stats, donutPercentages, cronActivityStats,
+      envFiltered, tabFiltered, finalFilteredSubdomains, finalFilteredDomains, stats, donutPercentages, cronActivityStats,
       handleSelectRow, handleSelectAll, handleTriggerCheck, handleTogglePause,
       confirmDeleteAction, confirmUnlinkAction, handleOpenAddPanel, handleOpenEditPanel, handlePanelSubmit,
       handleBatchDelete, handleBatchPause, handleSSLRefresh, handleSSLRenew,

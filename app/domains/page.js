@@ -9,7 +9,7 @@ export default function DomainsPage() {
     envFiltered,
     selectedRows,
     setSelectedRows,
-    finalFilteredSubdomains,
+    finalFilteredDomains,
     handleSelectAll,
     handleSelectRow,
     handleBatchPause,
@@ -25,7 +25,7 @@ export default function DomainsPage() {
     isLoadingMore,
     hasMore,
     loadMore
-  } = useInfiniteScroll(finalFilteredSubdomains, 6, 6);
+  } = useInfiniteScroll(finalFilteredDomains, 6, 6);
 
   return (
     <div className="view-container">
@@ -56,8 +56,8 @@ export default function DomainsPage() {
               <th style={{ width: "40px", textAlign: "center" }}>
                 <input
                   type="checkbox"
-                  checked={finalFilteredSubdomains.length > 0 && finalFilteredSubdomains.every(sub => selectedRows.includes(sub.id))}
-                  onChange={handleSelectAll}
+                  checked={finalFilteredDomains.length > 0 && finalFilteredDomains.every(sub => selectedRows.includes(sub.id))}
+                  onChange={() => handleSelectAll(finalFilteredDomains)}
                 />
               </th>
               <th style={{ width: "60px", textAlign: "center" }}>Status</th>
@@ -69,7 +69,7 @@ export default function DomainsPage() {
             </tr>
           </thead>
           <tbody>
-            {finalFilteredSubdomains.length === 0 ? (
+            {finalFilteredDomains.length === 0 ? (
               <tr>
                 <td colSpan="7" style={{ textAlign: "center", color: "var(--muted-text)", padding: "40px" }}>
                   No subdomain monitors match target query parameters.

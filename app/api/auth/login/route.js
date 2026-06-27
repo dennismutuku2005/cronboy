@@ -26,6 +26,15 @@ export async function POST(req) {
       try { policies = JSON.parse(policies); } catch { policies = []; }
     }
 
+    const payload = {
+      userId: user.id,
+      role: user.role,
+      name: user.name,
+      exp: Date.now() + (8 * 60 * 60 * 1000), // 8 hours
+      iat: Date.now(),
+    };
+    const sessionToken = Buffer.from(JSON.stringify(payload)).toString('base64');
+
     return NextResponse.json({
       ok: true,
       user: {
@@ -35,7 +44,7 @@ export async function POST(req) {
         role: user.role,
         policies: Array.isArray(policies) ? policies : [],
       },
-      sessionToken: `cb_${user.id}_${Date.now()}`,
+      sessionToken,
     });
   } catch (err) {
     console.error('[API] auth/login error:', err);

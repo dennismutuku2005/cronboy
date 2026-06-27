@@ -60,6 +60,7 @@ export function useCronBoy() {
     envFiltered: sub.envFiltered,
     tabFiltered: sub.tabFiltered,
     finalFilteredSubdomains: sub.finalFilteredSubdomains,
+    finalFilteredDomains: sub.finalFilteredDomains,
     stats: sub.stats,
     donutPercentages: sub.donutPercentages,
     cronActivityStats: sub.cronActivityStats,
