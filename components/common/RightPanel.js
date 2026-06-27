@@ -143,13 +143,13 @@ export default function RightPanel({
           </div>
           <div className="right-stat-row">
             <span className="right-stat-label">Success Rate</span>
-            <span className="right-stat-val" style={{ color: cronActivityStats.successRate > 98 ? "var(--success-green-text)" : "var(--warning-amber-text)" }}>
-              {stats.failures24h > 0 ? "92.4%" : "99.8%"}
+            <span className="right-stat-val" style={{ color: cronActivityStats.totalRuns > 0 ? (cronActivityStats.successRate > 98 ? "var(--success-green-text)" : "var(--warning-amber-text)") : "var(--muted-text)" }}>
+              {cronActivityStats.totalRuns > 0 ? `${cronActivityStats.successRate}%` : "N/A"}
             </span>
           </div>
           <div className="right-stat-row">
             <span className="right-stat-label">Avg Execution</span>
-            <span className="right-stat-val">{cronActivityStats.avgDuration}ms</span>
+            <span className="right-stat-val">{cronActivityStats.totalRuns > 0 ? `${cronActivityStats.avgDuration}ms` : "—"}</span>
           </div>
           <div className="right-stat-row" style={{ borderTop: "1px solid var(--border)", paddingTop: "8px", marginTop: "4px" }}>
             <span className="right-stat-label">Last failure</span>
