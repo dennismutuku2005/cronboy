@@ -71,6 +71,34 @@ CREATE TABLE IF NOT EXISTS alert_rules (
 );
 
 -- ============================================
+-- PINGS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS pings (
+  id CHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(2048) NOT NULL,
+  interval_mins INT DEFAULT 5,
+  last_ping_at TIMESTAMP NULL,
+  last_status VARCHAR(50) NULL,
+  last_response_ms INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ============================================
+-- PING LOGS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS ping_logs (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  ping_id CHAR(36) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  http_status INT NULL,
+  response_ms INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ping_id) REFERENCES pings(id) ON DELETE CASCADE
+);
+
+-- ============================================
 -- LOGS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS logs (
